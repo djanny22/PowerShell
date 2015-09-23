@@ -1,4 +1,5 @@
-﻿<#
+﻿
+<#
 .Synopsis
    Gets Username;Name;Surname;Department;Job title;Manager parameters for users in a specified country.
 .DESCRIPTION
@@ -9,9 +10,9 @@
    Get-ADCountryUsers.ps1 -Country UA
 .EXAMPLE
    Get-ADCountryUsers.ps1 -Country UA -FilePath "c:\temp\ttt.csv"
-.INPUTS Country
+.PARAMETER Country
    ISO Alfa-2 Country code https://en.wikipedia.org/wiki/ISO_3166-1
-.OUTPUTS FilePath
+.PARAMETER FilePath
    If this parameter is specified list of users will be ouput to file specified.
 .NOTES
     This script requires AD module to function.
@@ -21,7 +22,6 @@
     Change Log
     V0.01, 22.09.2015
 #>
-
 [CmdletBinding()]
 Param
 (
@@ -45,7 +45,7 @@ Begin
     {
         try
         {
-            import-module ActiveDirectory
+            import-module ActiveDirectory -ErrorAction Stop
         }
         catch
         {

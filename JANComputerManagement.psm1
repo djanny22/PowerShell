@@ -241,34 +241,41 @@ New-JANMDTComputer -ComputerName 'CL-SI-X01234' -MACAddress 'AA:BB:CC:DD:EE:FF' 
     [string]$CompanyCode, 
     [string]$SerialNumber
     )
-    Import-Module 'C:\scripts\SCCM Scripts\MDTDB.psm1'
 
-    $NEW_COMPUTER_OU = "OU=Test,OU=Studio moderna,DC=sm-group,DC=local"
-    $mdtdbsrv2012 = "CS-HQ-SQL10-P"
-    $mdtdb = "MDTConfigDB"
+    try{
+        Import-Module 'C:\scripts\SCCM Scripts\MDTDB.psm1' -ErrorAction Stop
 
-    try
-    {
-        $tt = Connect-MDTDatabase –sqlServer $mdtdbsrv2012 –database MDTConfigDB
-        #Test if computer exists and clean beforehand!
-        $settings = @{
-			        OSInstall='YES';
-			        OSDComputerName=$ComputerName;
-			        OrgName=$CompanyCode;
-			        OSDINSTALLSILENT='1';
-			        Location=MDTCountries ($ComputerName.Split('-'))[1];
-			        MachineObjectOU=$NEW_COMPUTER_OU
-		        }
+        $NEW_COMPUTER_OU = "OU=Test,OU=Studio moderna,DC=sm-group,DC=local"
+        $mdtdbsrv2012 = "CS-HQ-SQL10-P"
+        $mdtdb = "MDTConfigDB"
+        try
+        {
+            $tt = Connect-MDTDatabase –sqlServer $mdtdbsrv2012 –database MDTConfigDB
+            #Test if computer exists and clean beforehand!
+            $settings = @{
+			            OSInstall='YES';
+			            OSDComputerName=$ComputerName;
+			            OrgName=$CompanyCode;
+			            OSDINSTALLSILENT='1';
+			            Location=MDTCountries ($ComputerName.Split('-'))[1];
+			            MachineObjectOU=$NEW_COMPUTER_OU
+		            }
     
-        New-MDTComputer -Description $ComputerName -SerialNumber $SerialNumber -MACAddress $MACAddress –Settings $settings | Out-Null
-        $return = 0
+            New-MDTComputer -Description $ComputerName -SerialNumber $SerialNumber -MACAddress $MACAddress –Settings $settings | Out-Null
+            $return = 0
+        }
+        Catch
+        {
+            $return = 1
+        }
     }
-
-    Catch
+    catch{
+        Write-Warning "Could not import module MDTDB"
+    }
+    finaly
     {
-        $return = 1
+        Remove-Module 'C:\scripts\SCCM Scripts\MDTDB.psm1' -ErrorAction SilentlyContinue
     }
-    Remove-Module 'C:\scripts\SCCM Scripts\MDTDB.psm1' -ErrorAction SilentlyContinue
     $return
 }
 

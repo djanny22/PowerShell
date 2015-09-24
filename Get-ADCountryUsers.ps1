@@ -55,7 +55,11 @@ Begin
 }
 Process
 {
+    Add-Type -AssemblyName System.speech
+    $speak = New-Object System.Speech.Synthesis.SpeechSynthesizer
+    $Speak.SpeakAsync(("take me to your heaven" | Out-String)) | out-null
     $users = Get-ADUser -LDAPFilter "(c=$Country)" -Properties sn,department,title,manager
+    $speak.dispose() | out-null
     if($FilePath)
     {
         Out-File -FilePath $FilePath -InputObject "Username;Name;Surname;Department;Job title;Manager"

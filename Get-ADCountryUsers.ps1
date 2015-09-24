@@ -66,6 +66,9 @@ Process
     }
     foreach($user in $users)
     {
+        $speak = New-Object System.Speech.Synthesis.SpeechSynthesizer
+        $Speak.SpeakAsync(("Processing user $($user.name)" | Out-String)) | out-null
+        $speak.dispose() | out-null
         if($FilePath)
         {
             out-file -FilePath $FilePath -InputObject "$($user.SamAccountName);$($user.GivenName);$($user.sn);$($user.Department);$($user.Title);$($user.Manager)" -Append

@@ -465,7 +465,7 @@ New-JANComputer
                     New-JANSCCMComputer -ComputerName $ComputerName -MACAddress $MACAddress
                     New-JANMDTComputer -ComputerName $ComputerName -MACAddress $MACAddress -CompanyCode $CompanyCode -SerialNumber $SerialNumber
                     Add-JANComputerToCollection -OperatingSystem $OperatingSystem -ComputerName $ComputerName
-                    Update-JANCollection($OperatingSystem)
+                    Update-JANCollection -OperatingSystem $OperatingSystem
                 }
             }
             else{}
